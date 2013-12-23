@@ -18,6 +18,10 @@ namespace Wad.iFollow.Web.Models
         public int followersCount { get; set; }
         public int followedCount { get; set; }
 
+        [FileSize(1024 * 1024 * 3)]
+        [FileTypes("jpg,jpeg,png,gif")]
+        public HttpPostedFileBase File { get; set; }
+
         public WallPostsModel elements { get; set; }
     }
 }
