@@ -1,0 +1,39 @@
+﻿@model Wad.iFollow.Web.Models.ProfileModel
+@{
+    ViewBag.Title = "Profile Page";
+}
+
+<!--Impartim partea superioara a ecranului in col-md-7 si col-md-5-->
+ 
+<div class="row">
+    <div class="col-md-7">
+        <br />
+        <div class ="col-md-2"></div> 
+        <img src="Images/placeholderProfile.jpg" class="col-md-3 fileupload-preview thumbnail" style="height: 200px;"/>
+        <div class ="col-md-1"></div> 
+        <textarea class="col-md-5"  readonly="readonly" rows="3" style="background-color:#eaeaea; text-align:left; font-size:medium " placeholder="@Model.userName says: Hello, world!"></textarea>
+        <div class ="col-md-12" style="height:100px"></div>
+            
+        <div class ="col-md-5">
+            <div class ="col-md-2"></div>
+            @Ajax.ActionLink(@Model.postsCount + " Posts", "ViewPosts", "Wall", new { user = @Model.userId}, new AjaxOptions { UpdateTargetId = "bodyPartial" }, new { @class = "btn btn-primary" })  
+        </div>
+        
+        <div class ="col-md-1" style="height:40px"></div>
+        <div class ="col-md-5">
+            <div class ="col-md-2"></div>
+            @Ajax.ActionLink(@Model.followersCount+" Followers", "ViewFollowers", "Wall", new { user = @Model.userId}, new AjaxOptions { UpdateTargetId="bodyPartial"}, new { @class = "btn btn-primary" })  
+        </div>
+            
+        <div class ="col-md-1" style="height:40px"></div>
+        <div class ="col-md-5">
+            <div class ="col-md-2"></div>
+            @Ajax.ActionLink(@Model.followedCount+" Following", "ViewFollowed", "Wall", new { user = @Model.userId}, new AjaxOptions { UpdateTargetId="bodyPartial"}, new { @class = "btn btn-primary" })  
+        </div>            
+    </div>
+</div>
+
+<div class="col-md-2" style="height:30px"></div>
+<div id="bodyPartial">
+    @Html.Partial("~/Views/Wall/_ProfilePagePosts.cshtml", @Model)
+</div>
