@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -127,13 +129,16 @@ namespace Wad.iFollow.Web.Controllers
         {
             long currentUserId;
             ProfileModel pm = new ProfileModel();
+            pm.avatarPath = "";
             if (user == "current")
             {
                 currentUserId = (Session["user"] as user).id;
+                pm.isCurrentUser = true;
             }
             else
             {
                 currentUserId = (long)Convert.ToDouble(user);
+                pm.isCurrentUser = ((Session["user"] as user).id == currentUserId);
             }
                         
             using (var entities = new ifollowdatabaseEntities4())
@@ -204,6 +209,54 @@ namespace Wad.iFollow.Web.Controllers
             }
 
             return PartialView("_Followers", fm);
+        }
+
+        [HttpPost]
+        public ActionResult SaveAvatar(ProfileModel fileModel)
+        {
+            if (ModelState.IsValid)
+            {
+                image newImage = null;
+                user currentUser = Session["user"] as user;
+
+                if (fileModel != null && fileModel.File != null)
+                {
+                    string timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssffff") + ".png";
+                    var path = Path.Combine(Server.MapPath("~/Images/UserPhotos"), timestamp);
+                    fileModel.File.SaveAs(path);
+                    fileModel.avatarPath = path;
+
+                    using (var entities = new ifollowdatabaseEntities4())
+                    {
+                        newImage = new image();
+                        newImage.isAvatar = true;
+                        newImage.isDeleted = false;
+                        newImage.url = timestamp;
+
+                        int count = entities.images.Count();
+                        newImage.id = count + 1;
+                        newImage.ownerId = currentUser.id;
+
+                        entities.images.Add(newImage);
+                        try
+                        {
+                            entities.SaveChanges();
+                        }
+                        catch (DbEntityValidationException dbEx)
+                        {
+                            foreach (var validationErrors in dbEx.EntityValidationErrors)
+                            {
+                                foreach (var validationError in validationErrors.ValidationErrors)
+                                {
+                                    Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return PartialView("_ProfilePage", fileModel);
         }
 
         public ActionResult Followers()
