@@ -163,6 +163,12 @@ namespace Wad.iFollow.Web.Controllers
                 pm.followedCount = currentUser.followers1.Count();
                 pm.elements.BuildFromImagesAndPosts(currentUser.posts, currentUser.images);
             }
+
+            if (pm.elements.wallElements.Count() == 0)
+            {
+                return PartialView("_NoPosts");
+            }
+
             return PartialView("_ProfilePagePosts", pm);
         }
 

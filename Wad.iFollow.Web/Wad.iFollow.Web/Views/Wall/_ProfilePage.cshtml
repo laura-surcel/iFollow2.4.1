@@ -4,7 +4,6 @@
 }
 
 <!--Impartim partea superioara a ecranului in col-md-7 si col-md-5-->
- 
 <div class="row">
     <div class="col-md-7">
         <br />
@@ -35,5 +34,12 @@
 
 <div class="col-md-2" style="height:30px"></div>
 <div id="bodyPartial">
-    @Html.Partial("~/Views/Wall/_ProfilePagePosts.cshtml", @Model)
+    @if (@Model.postsCount != 0)
+    {
+        @Html.Partial("~/Views/Wall/_ProfilePagePosts.cshtml", @Model)
+    }
+    else
+    {
+        @Html.Partial("~/Views/Shared/_NoPosts.cshtml")
+    }
 </div>

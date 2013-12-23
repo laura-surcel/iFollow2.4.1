@@ -434,6 +434,7 @@
     <Content Include="Views\Wall\_ProfilePagePosts.cshtml" />
     <Content Include="Views\Shared\_NoFollowers.cshtml" />
     <Content Include="Views\Shared\_NoUsersFollowed.cshtml" />
+    <Content Include="Views\Shared\_NoPosts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Photos\" />

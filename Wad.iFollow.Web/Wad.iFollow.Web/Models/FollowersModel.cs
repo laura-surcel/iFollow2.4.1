@@ -62,26 +62,34 @@ namespace Wad.iFollow.Web.Models
                 
                 foreach(follower f in fids)
                 {
-                    user u = conn.users.First(uu => uu.id == f.followerId && f.followedId == currentUser.id);
-                    bool isFollowed = conn.users.Any(uu => u.id == f.followedId && f.followerId == currentUser.id);
-
-                    FollowerData fd = new FollowerData();
-                    fd.id = u.id;
-                    fd.firstName = u.firstName;
-                    fd.lastName = u.lastName;
-                    fd.isFollowed = isFollowed;
-
-                    if (u.images.Any(i => i.isAvatar == true))
+                    if(conn.users.Any(uu => uu.id == f.followerId && f.followedId == currentUser.id))
                     {
-                        image av = u.images.First(i => i.isAvatar == true);
-                        fd.avatar = av.url;
+                        user u = conn.users.First(uu => uu.id == f.followerId && f.followedId == currentUser.id);
+                        bool isFollowed = conn.users.Any(uu => u.id == f.followedId && f.followerId == currentUser.id);
+
+                        FollowerData fd = new FollowerData();
+                        fd.id = u.id;
+                        fd.firstName = u.firstName;
+                        fd.lastName = u.lastName;
+                        fd.isFollowed = isFollowed;
+
+                        if (u.images.Any(i => i.isAvatar == true))
+                        {
+                            image av = u.images.First(i => i.isAvatar == true);
+                            fd.avatar = av.url;
+                        }
+                        else
+                        {
+                            fd.avatar = "Images/placeholderProfile.jpg";
+                        }
+                        wallElements.Add(fd);
                     }
-                    else
-                    {
-                        fd.avatar = "Images/placeholderProfile.jpg";
-                    }
-                    wallElements.Add(fd);
                 }                
+            }
+
+            if (wallElements.Count() == 0)
+            {
+                throw (new Exception());
             }
         }
 
@@ -95,24 +103,32 @@ namespace Wad.iFollow.Web.Models
 
                 foreach (follower f in fids)
                 {
-                    user u = conn.users.First(uu => uu.id == f.followedId && f.followerId == currentUser.id);
-                    FollowerData fd = new FollowerData();
-                    fd.id = u.id;
-                    fd.firstName = u.firstName;
-                    fd.lastName = u.lastName;
-                    fd.isFollowed = true;
+                    if (conn.users.Any(uu => uu.id == f.followedId && f.followerId == currentUser.id))
+                    {
+                        user u = conn.users.First(uu => uu.id == f.followedId && f.followerId == currentUser.id);
+                        FollowerData fd = new FollowerData();
+                        fd.id = u.id;
+                        fd.firstName = u.firstName;
+                        fd.lastName = u.lastName;
+                        fd.isFollowed = true;
 
-                    if (u.images.Any(i => i.isAvatar == true))
-                    {
-                        image av = u.images.First(i => i.isAvatar == true);
-                        fd.avatar = av.url;
+                        if (u.images.Any(i => i.isAvatar == true))
+                        {
+                            image av = u.images.First(i => i.isAvatar == true);
+                            fd.avatar = av.url;
+                        }
+                        else
+                        {
+                            fd.avatar = "Images/placeholderProfile.jpg";
+                        }
+                        wallElements.Add(fd);
                     }
-                    else
-                    {
-                        fd.avatar = "Images/placeholderProfile.jpg";
-                    }
-                    wallElements.Add(fd);
                 }
+            }
+
+            if(wallElements.Count() == 0)
+            {
+                throw (new Exception());
             }
         }
     }
